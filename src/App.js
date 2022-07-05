@@ -1,8 +1,14 @@
 import React from "react";
+import Manage from "./pages/Manage";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Header from "./components/Header";
 
  export default function App()
  {
     return (
-      <h1>App Component</h1>
+      <div className="main-container">
+        <Header />
+        <Manage />
+      </div>
     )
  }
