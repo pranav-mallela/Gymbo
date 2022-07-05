@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
+import { useLocation } from 'react-router-dom';
 
 export default function Profile()
 {
@@ -13,11 +14,12 @@ export default function Profile()
         const editPermission = id == "edit-button" ? true : false;
         setCanEdit(editPermission);
     }
-    console.log(canEdit);
+    // console.log(canEdit);
+    const {name, phone} = useLocation().state;
     return (
         <div className="profile-container">
             <div className="profile-top container">
-                <Form.Control size="lg" id="profile-name" placeholder="Name" disabled={!canEdit}></Form.Control>
+                <Form.Control size="lg" id="profile-name" placeholder="Name" value={name} disabled={!canEdit}></Form.Control>
                 <div>
                     <Button
                         id="edit-button"
@@ -38,7 +40,7 @@ export default function Profile()
             <div className="profile-info-container container">
                 <Row>
                     <Col xs={12} md={6}>
-                        <Form.Control type="text" placeholder="Phone" disabled={!canEdit} />
+                        <Form.Control type="text" placeholder="Phone" value={phone} disabled={!canEdit} />
                         <br />
                     </Col>
                     <Col xs={12} md={6}>

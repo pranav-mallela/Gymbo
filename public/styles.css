@@ -46,6 +46,10 @@ body{
   margin: 1rem;
 }
 
+.joinee-link{
+  text-decoration: none;
+}
+
 /*Profile CSS*/
 .profile-container{
   text-align: center;
