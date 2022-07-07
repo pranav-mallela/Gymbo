@@ -1,16 +1,18 @@
 import React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Row, Col } from "react-bootstrap";
 import Joinee from "../components/Joinee";
 import data from '../data';
 import { nanoid } from 'nanoid';
-// import DatePicker from "react-bootstrap-date-picker";
 
 export default function Manage()
 {
-    const [formData, setFormData] = React.useState({name:"", phone:"", startDate:"", endDate: ""});
+    const [formData, setFormData] = React.useState({name:"", phone:"", startDate:null, endDate:null});
     const [search, setSearch] = React.useState("");
+    const [dates, setDates] = React.useState({start:new Date(), end:null});
     // const data = ['Pranav', 'Akshat', 'Prabhav', 'Pratham', 'Ram', 'Bheem', 'Raju', 'Raghav', 'Gautam', 'Abhijith'];
     function handleChange(e)
     {
@@ -63,8 +65,22 @@ export default function Manage()
                     <br />
                     <Form.Control type="text" placeholder="Phone number" name="phone" onChange={handleChange} />
                     <br />
+                    <DatePicker
+                        selected={dates.start}
+                        onChange={date => setDates(prevDates => ({...prevDates, start: date}))}
+                        dateFormat='dd/MM/yyyy'
+                        minDate={new Date()}
+                        isClearable
+                    />
                     <Form.Control type="text" placeholder="Start date" name="startDate" onChange={handleChange} />
                     <br />
+                    <DatePicker
+                        selected={dates.end}
+                        onChange={date => setDates(prevDates => ({...prevDates, end: date}))}
+                        dateFormat='dd/MM/yyyy'
+                        minDate={dates.start}
+                        isClearable
+                    />
                     <Form.Control type="text" placeholder="End date" name="endDate" onChange={handleChange} />
                     <br />
                     <Button variant="primary" type="submit">
