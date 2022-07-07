@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const manageRoutes = require('./routes/manageRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const machineRoutes = require('./routes/machineRoutes');
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/manage', manageRoutes);
 app.use('/profile', profileRoutes);
-
+app.use('/machines', machineRoutes);
 mongoose.connect(process.env.MONGO_URI)
     .then(result => {
         app.listen(process.env.PORT,() => {
@@ -20,5 +21,3 @@ mongoose.connect(process.env.MONGO_URI)
         })
     })
     .catch(err => console.log(err))
-
-app.use(express.static('../public'));
