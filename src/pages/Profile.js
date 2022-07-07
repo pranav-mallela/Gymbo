@@ -1,4 +1,6 @@
 import React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
@@ -8,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 export default function Profile()
 {
     const [canEdit,setCanEdit] = React.useState(false);
+    const [dates, setDates] = React.useState({start:new Date(), end:null});
     function handleClick(e)
     {
         const {id} = e.target;
@@ -44,10 +47,30 @@ export default function Profile()
                         <br />
                     </Col>
                     <Col xs={12} md={6}>
-                        <Form.Control type="text" placeholder="Start Date" disabled={!canEdit} />
-                        <br />
-                        <Form.Control type="text" placeholder="End Date" disabled={!canEdit} />
-                        <br />
+                        <div className="start-date">
+                            <p>Start Date</p>
+                            <DatePicker
+                                className="date-picker"
+                                selected={dates.start}
+                                onChange={date => setDates(prevDates => ({...prevDates, start: date}))}
+                                dateFormat='dd/MM/yyyy'
+                                minDate={new Date()}
+                                disabled={!canEdit}
+                            />
+                            <br />
+                        </div>
+                        <div className="end-date">
+                            <p>End Date</p>
+                            <DatePicker
+                                className="date-picker"
+                                selected={dates.end}
+                                onChange={date => setDates(prevDates => ({...prevDates, end: date}))}
+                                dateFormat='dd/MM/yyyy'
+                                minDate={dates.start}
+                                disabled={!canEdit}
+                            />
+                            <br />
+                        </div>
                     </Col>
                 </Row>
             </div>

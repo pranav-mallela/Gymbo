@@ -10,7 +10,7 @@ import { nanoid } from 'nanoid';
 
 export default function Manage()
 {
-    const [formData, setFormData] = React.useState({name:"", phone:"", startDate:null, endDate:null});
+    const [formData, setFormData] = React.useState({name:"", phone:""});
     const [search, setSearch] = React.useState("");
     const [dates, setDates] = React.useState({start:new Date(), end:null});
     // const data = ['Pranav', 'Akshat', 'Prabhav', 'Pratham', 'Ram', 'Bheem', 'Raju', 'Raghav', 'Gautam', 'Abhijith'];
@@ -19,7 +19,7 @@ export default function Manage()
         const {name, value} = e.target;
         setFormData(prevData => ({...prevData, [name] : [value]}));
     }
-    // console.log(formData);
+    console.log(formData);
     function handleSubmit()
     {
         //send profile to DB
@@ -65,27 +65,33 @@ export default function Manage()
                     <br />
                     <Form.Control type="text" placeholder="Phone number" name="phone" onChange={handleChange} />
                     <br />
-                    <DatePicker
-                        selected={dates.start}
-                        onChange={date => setDates(prevDates => ({...prevDates, start: date}))}
-                        dateFormat='dd/MM/yyyy'
-                        minDate={new Date()}
-                        isClearable
-                    />
-                    <Form.Control type="text" placeholder="Start date" name="startDate" onChange={handleChange} />
-                    <br />
-                    <DatePicker
-                        selected={dates.end}
-                        onChange={date => setDates(prevDates => ({...prevDates, end: date}))}
-                        dateFormat='dd/MM/yyyy'
-                        minDate={dates.start}
-                        isClearable
-                    />
-                    <Form.Control type="text" placeholder="End date" name="endDate" onChange={handleChange} />
-                    <br />
-                    <Button variant="primary" type="submit">
-                        Add
-                    </Button>
+                    <div className="start-date">
+                        <p>Start Date</p>
+                        <DatePicker
+                            className="date-picker"
+                            selected={dates.start}
+                            onChange={date => setDates(prevDates => ({...prevDates, start: date}))}
+                            dateFormat='dd/MM/yyyy'
+                            minDate={new Date()}
+                        />
+                        <br />
+                    </div>
+                    <div className="end-date">
+                        <p>End Date</p>
+                        <DatePicker
+                            className="date-picker"
+                            selected={dates.end}
+                            onChange={date => setDates(prevDates => ({...prevDates, end: date}))}
+                            dateFormat='dd/MM/yyyy'
+                            minDate={dates.start}
+                        />
+                        <br />
+                    </div>
+                    <div className='button-container'>
+                        <Button variant="primary" type="submit">
+                            Add
+                        </Button>
+                    </div>
                 </Form>
                 </Col>
             </Row>
@@ -93,18 +99,5 @@ export default function Manage()
     )
 }
 
-/* <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                    </Form.Text>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                </Form.Group> */
-
+{/* <Form.Control type="text" placeholder="Start date" name="startDate" onChange={handleChange} />
+<Form.Control type="text" placeholder="End date" name="endDate" onChange={handleChange} /> */}
