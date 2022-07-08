@@ -5,42 +5,79 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Row, Col } from "react-bootstrap";
 import Joinee from "../components/Joinee";
-import data from '../joineeData';
-import { nanoid } from 'nanoid';
+// import data from '../joineeData';
+// import { nanoid } from 'nanoid';
 
 export default function Manage()
 {
     const [formData, setFormData] = React.useState({name:"", phone:""});
     const [search, setSearch] = React.useState("");
     const [dates, setDates] = React.useState({start:new Date(), end:null});
+    const [joineeData, setJoineeData] = React.useState([])
+    const [refresh, setRefresh] = React.useState(false);
     // const data = ['Pranav', 'Akshat', 'Prabhav', 'Pratham', 'Ram', 'Bheem', 'Raju', 'Raghav', 'Gautam', 'Abhijith'];
+    React.useEffect(()=> {
+        const fetchJoineeData = async() => {
+            const response = await fetch('/manage');
+            const json = await response.json();
+            if(response.ok)
+            {
+                setJoineeData(json);
+                // console.log(json);
+            }
+            else console.log(json.error)
+        }
+        fetchJoineeData();
+    },[refresh])
     function handleChange(e)
     {
         const {name, value} = e.target;
         setFormData(prevData => ({...prevData, [name] : [value]}));
     }
-    console.log(formData);
-    function handleSubmit()
-    {
-        //send profile to DB
+    // console.log(formData);
+//////////////////////////////////////////////////////
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newJoinee = {
+            name: formData.name.toString(),
+            phone: formData.phone.toString()
+        }
+        const response = await fetch('/manage', {
+            method: 'POST',
+            body: JSON.stringify(newJoinee),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        })
+        const json = await response.json()
+        if(!response.ok)
+        {
+            //output the error
+            console.log(json.error)
+        }
+        else{
+            setFormData({name: "", phone: ""});
+            setRefresh(prev => !prev);
+        }
     }
+////////////////////////////////////////////////////
     function handleSearch(e)
     {
         setSearch(e.target.value);
     }
 
     const searchResults = [];
-    for(let i=0;i<data.length;i++)
+    for(let i=0;i<joineeData.length;i++)
     {
-        if(data[i].name.toLowerCase().includes(search.toLowerCase()))
+        if(joineeData[i].name.toLowerCase().includes(search.toLowerCase()))
         {
-            searchResults.push(data[i]);
+            searchResults.push(joineeData[i]);
         }
     }
     // console.log(searchResults);
     const resultsEls = searchResults.map(joinee => {
         return <Joinee
-                    id={nanoid()}
+                    id={joinee._id}
                     name={joinee.name}
                     phone={joinee.phone}
                 />
@@ -61,9 +98,9 @@ export default function Manage()
                 <Col xs={12} md={6} lg={5}>
                 <Form className="container" onSubmit={handleSubmit}>
                     <h2>Add joinee</h2>
-                    <Form.Control type="text" placeholder="Name" name="name" onChange={handleChange} />
+                    <Form.Control type="text" placeholder="Name" name="name" value={formData.name} onChange={handleChange} />
                     <br />
-                    <Form.Control type="text" placeholder="Phone number" name="phone" onChange={handleChange} />
+                    <Form.Control type="text" placeholder="Phone number" name="phone" value={formData.phone} onChange={handleChange} />
                     <br />
                     <div className="start-date">
                         <p>Start Date</p>
