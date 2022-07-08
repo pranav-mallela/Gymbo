@@ -11,9 +11,9 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(morgan('dev'));
-app.use('/manage', manageRoutes);
-app.use('/profile', profileRoutes);
-app.use('/machines', machineRoutes);
+app.use('/api/manage', manageRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/machines', machineRoutes);
 mongoose.connect(process.env.MONGO_URI)
     .then(result => {
         app.listen(process.env.PORT,() => {

@@ -14,7 +14,7 @@ import { useLocation, BrowserRouter as Router, Routes, Route } from "react-route
         <Header />
         <Routes location={location} key={location.key}>
           <Route path='/' element={<Manage />} />
-          <Route path='/profile/:type' element={<Profile />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='/machines' element={<Machines />} />
         </Routes>
       </div>

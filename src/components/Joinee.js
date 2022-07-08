@@ -5,10 +5,13 @@ export default function Joinee(props)
 {
     return (
         <Link 
-            to='/profile/parameter-data'
+            to='/profile'
             state={{
+                _id: props._id,
                 name: props.name,
-                phone: props.phone
+                phone: props.phone,
+                startDate: props.startDate,
+                endDate: props.endDate
             }}
             className="joinee-link"
         >
