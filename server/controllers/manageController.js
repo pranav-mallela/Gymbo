@@ -1,9 +1,9 @@
 const Joinee = require('../models/joineeModel');
 
 const addJoinee = async (req, res) => {
-    const {name, phone} = req.body
+    const {name, phone, startDate, endDate} = req.body
     try{
-        const newJoinee = await Joinee.create({name, phone})
+        const newJoinee = await Joinee.create({name, phone, startDate, endDate})
         res.status(200).json({newJoinee})
     } 
     catch (err){

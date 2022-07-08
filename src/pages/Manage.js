@@ -40,7 +40,9 @@ export default function Manage()
         e.preventDefault();
         const newJoinee = {
             name: formData.name.toString(),
-            phone: formData.phone.toString()
+            phone: formData.phone.toString(),
+            startDate: dates.start,
+            endDate: dates.end
         }
         const response = await fetch('/manage', {
             method: 'POST',
@@ -57,6 +59,7 @@ export default function Manage()
         }
         else{
             setFormData({name: "", phone: ""});
+            setDates({start: new Date(), end: null});
             setRefresh(prev => !prev);
         }
     }
