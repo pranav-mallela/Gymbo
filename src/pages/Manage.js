@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Row, Col } from "react-bootstrap";
 import Joinee from "../components/Joinee";
-import data from '../data';
+import data from '../joineeData';
 import { nanoid } from 'nanoid';
 
 export default function Manage()
@@ -47,7 +47,7 @@ export default function Manage()
     })
 
     return (
-        <div className="manage-container">
+        <div className="page-container">
             <Row>
                 <Col xs={12} md={6} lg={7}>
                 <div className="search-container container">
@@ -98,6 +98,3 @@ export default function Manage()
         </div>
     )
 }
-
-{/* <Form.Control type="text" placeholder="Start date" name="startDate" onChange={handleChange} />
-<Form.Control type="text" placeholder="End date" name="endDate" onChange={handleChange} /> */}
