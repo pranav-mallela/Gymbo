@@ -3,11 +3,12 @@ const router = express.Router();
 const {
     getAllMachines,
     addMachine,
-    modifyMachine
+    modifyMachine,
+    deleteMachine
 } = require('../controllers/machineControllers');
 
 router.get('/', getAllMachines);
 router.post('/', addMachine);
 router.patch('/:id', modifyMachine);
-// router.delete('/', deleteMachine);
+router.delete('/:id', deleteMachine);
 module.exports = router;

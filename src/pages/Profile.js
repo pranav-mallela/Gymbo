@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
+import { Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 export default function Profile()
@@ -76,14 +77,16 @@ export default function Profile()
                             >Edit <span className="material-symbols-outlined">
                             edit</span>
                         </Button> 
-                        <Button 
-                            variant="danger"
-                            type="button"
-                            onClick={handleDelete}
-                            className="profile-buttons">Delete 
-                            <span className="material-symbols-outlined">
-                            delete</span>
-                        </Button>
+                        <Link to="/">
+                            <Button 
+                                variant="danger"
+                                type="button"
+                                onClick={handleDelete}
+                                className="profile-buttons">Delete 
+                                <span className="material-symbols-outlined">
+                                delete</span>
+                            </Button>
+                        </Link>
                     </div>
                 </div>
                 <div className="profile-info-container container">

@@ -8,30 +8,80 @@ export default function Machines()
 {
     const [formData, setFormData] = React.useState({machine: "", quantity: 0});
     const [search, setSearch] = React.useState("");
+    const [machineData, setMachineData] = React.useState([]);
+    const [refresh, setRefresh] = React.useState(false);
+
+    React.useEffect(() => {
+        const fetchMachines = async () => {
+            const response = await fetch('/api/machines');
+            const json = await response.json();
+            if(!response.ok) console.log(json.error);
+            else setMachineData(json);
+        }
+        fetchMachines();
+    },[refresh])
+
     function handleChange(e)
     {
         const {name, value} = e.target;
         setFormData(prevData => ({...prevData, [name] : [value]}));
         if(name == 'machine') setSearch(value);
     }
+
     function handleResultClick(e)
     {
         setFormData(prevData => ({...prevData, machine:e.target.innerHTML}))
     }
-    // console.log(formData);
-    const searchResults = [];
-    for(let i=0;i<data.length;i++)
-    {
-        if(search != "" && data[i].machine.toLowerCase().includes(search.toLowerCase()))
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let _id, method = 'POST';
+        for(let i=0;i<machineData.length;i++)
         {
-            searchResults.push(data[i]);
+            if(machineData[i].name == formData.machine)
+            {
+                _id = machineData[i]._id;
+                if(formData.quantity > 0) method = 'PATCH';
+                else method = 'DELETE';
+            }
+        }
+        //async function to perform POST/PATCH request
+        const sendToDB = async () => {
+            const machineObj = {
+                name: formData.machine.toString(),
+                quantity: formData.quantity[0]
+            }
+            const str = (method == 'POST') ? "" : _id;
+            const response = await fetch('/api/machines/'+str, {
+                method: [method],
+                body: JSON.stringify(machineObj),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const json = await response.json();
+            if(!response.ok) console.log(json.error);
+            else{
+                setFormData({machine: "", quantity: 0});
+                setRefresh(prev => !prev);
+            }
+        }
+        sendToDB();
+    }
+
+    const searchResults = [];
+    for(let i=0;i<machineData.length;i++)
+    {
+        if(search != "" && machineData[i].name.toLowerCase().includes(search.toLowerCase()))
+        {
+            searchResults.push(machineData[i]);
         }
     }
-    // console.log(searchResults);
-    const machineEls = data.map(machineObj => {
+
+    const machineEls = machineData.map(machineObj => {
         return <Equipment
-                    id={nanoid()}
-                    machine={machineObj.machine}
+                    _id={machineObj._id}
+                    machine={machineObj.name}
                     quantity={machineObj.quantity}
                 />
     })
@@ -40,14 +90,14 @@ export default function Machines()
         return <div 
                     className="list-hover list-item"
                     onClick={handleResultClick}
-                >{machineObj.machine}</div>
+                >{machineObj.name}</div>
     })
 
     return(
         <div className="page-container">
             <Row>
                 <Col xs={12} md={6}>
-                    <Form className="container">
+                    <Form className="container" onSubmit={handleSubmit}>
                         <h2>Manage Equipment</h2>
                         <Form.Control type="text" placeholder="Machine" name="machine" value={formData.machine} onChange={handleChange} />
                         <div className="container">

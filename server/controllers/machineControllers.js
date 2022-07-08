@@ -39,8 +39,20 @@ const modifyMachine = async (req, res) => {
     else res.status(200).json(machine);
 }
 
+const deleteMachine = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+    {
+        res.status(400).json({error: "No such machine found"})
+    }
+    const machine = await Machine.findOneAndDelete({_id: id});
+    if(!machine) res.status(400).json({error: "No such machine found"});
+    else res.status(200).json(machine);
+}
+
 module.exports = {
     getAllMachines,
     addMachine,
-    modifyMachine
+    modifyMachine,
+    deleteMachine
 }
