@@ -3,6 +3,17 @@ import { Link } from 'react-router-dom'
 
 export default function Joinee(props)
 {
+    let joineeClass;
+    const presentDate = new Date();
+    const msDay = 60*60*24*1000;
+    const classifyNew = Math.floor((presentDate - new Date(props.startDate))/msDay);
+    const classifyEnding = Math.floor((new Date(props.endDate) - presentDate)/msDay);
+
+    if(classifyNew >= 0 && classifyNew <= 2) joineeClass = "new-joinee";
+    else if(presentDate > new Date(props.endDate)) joineeClass = "done-joinee";
+    else if(classifyEnding <= 2) joineeClass = "ending-joinee";
+    else joineeClass = "simple-joinee";
+
     return (
         <Link 
             to='/profile'
@@ -15,7 +26,7 @@ export default function Joinee(props)
             }}
             className="joinee-link"
         >
-            <div className="joinee-container container">
+            <div className={`joinee-container container ${joineeClass}`}>
                 <div className="name-container">
                     <span className="material-symbols-outlined">person</span>
                     <div className="name">{props.name}</div>
