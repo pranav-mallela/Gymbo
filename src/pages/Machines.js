@@ -1,8 +1,7 @@
 import React from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import Equipment from '../components/Equipment'
-import data from '../machineData'
-import { nanoid } from 'nanoid'
+import Equipment from '../components/Equipment';
+import About from '../components/About';
 
 export default function Machines()
 {
@@ -25,7 +24,7 @@ export default function Machines()
     {
         const {name, value} = e.target;
         setFormData(prevData => ({...prevData, [name] : [value]}));
-        if(name == 'machine') setSearch(value);
+        if(name === 'machine') setSearch(value);
     }
 
     function handleResultClick(e)
@@ -35,23 +34,27 @@ export default function Machines()
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let _id, method = 'POST';
+        let _id, method = 'POST', presentQuantity = 0;
         for(let i=0;i<machineData.length;i++)
         {
-            if(machineData[i].name == formData.machine)
+            if(machineData[i].name === formData.machine)
             {
                 _id = machineData[i]._id;
-                if(formData.quantity > 0) method = 'PATCH';
+                if(machineData[i].quantity + parseInt(formData.quantity[0]) > 0)
+                {
+                    method = 'PATCH';
+                    presentQuantity = machineData[i].quantity;
+                }
                 else method = 'DELETE';
             }
         }
-        //async function to perform POST/PATCH request
+        //async function to perform POST/PATCH/DELETE request
         const sendToDB = async () => {
             const machineObj = {
                 name: formData.machine.toString(),
-                quantity: formData.quantity[0]
+                quantity: presentQuantity + parseInt(formData.quantity[0])
             }
-            const str = (method == 'POST') ? "" : _id;
+            const str = (method === 'POST') ? "" : _id;
             const response = await fetch('/api/machines/'+str, {
                 method: [method],
                 body: JSON.stringify(machineObj),
@@ -72,7 +75,7 @@ export default function Machines()
     const searchResults = [];
     for(let i=0;i<machineData.length;i++)
     {
-        if(search != "" && machineData[i].name.toLowerCase().includes(search.toLowerCase()))
+        if(search !== "" && machineData[i].name.toLowerCase().includes(search.toLowerCase()))
         {
             searchResults.push(machineData[i]);
         }
@@ -92,9 +95,13 @@ export default function Machines()
                     onClick={handleResultClick}
                 >{machineObj.name}</div>
     })
+    const aboutMachines = "It keeps track of the quantity of the different equipment in your gym. Clicking 'Manage' updates the quantity by the quantity entered."
 
     return(
         <div className="page-container">
+            <About
+                aboutText={aboutMachines}
+            />
             <Row>
                 <Col xs={12} md={6}>
                     <Form className="container" onSubmit={handleSubmit}>

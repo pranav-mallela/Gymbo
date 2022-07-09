@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
-import { Link } from "react-router-dom";
+import About from "../components/About";
 import { useLocation } from 'react-router-dom';
 
 export default function Profile()
@@ -26,6 +26,7 @@ export default function Profile()
     }
     const handleSaveProfile = async (e) => {
         e.preventDefault();
+        window.location.href='/';
         const changedJoinee = {
             name: formData.name.toString(),
             phone: formData.phone.toString(),
@@ -43,6 +44,7 @@ export default function Profile()
         if(!response.ok) console.log(json.error);
     }
     const handleDelete = async (e) => {
+        window.location.href = '/';
         e.preventDefault();
         const response = await fetch('api/profile/'+ _id, {
             method: 'DELETE',
@@ -53,9 +55,13 @@ export default function Profile()
         const json = await response.json()
         if(!response.ok) console.log(json.error);
     }
+    const aboutProfile = "It keeps track of each joinee's data. Clicking 'Edit' allows modification. 'Delete' deleted the profile. 'Save Profile' saves the same. Deleting or saving redirects you to home."
 
     return (
         <div className="profile-container">
+            <About
+                aboutText={aboutProfile}
+            />
             <Form onSubmit={handleSaveProfile}>
                 <div className="profile-top container">
                     <Form.Control 
@@ -77,16 +83,14 @@ export default function Profile()
                             >Edit <span className="material-symbols-outlined">
                             edit</span>
                         </Button> 
-                        <Link to="/">
-                            <Button 
-                                variant="danger"
-                                type="button"
-                                onClick={handleDelete}
-                                className="profile-buttons">Delete 
-                                <span className="material-symbols-outlined">
-                                delete</span>
-                            </Button>
-                        </Link>
+                        <Button 
+                            variant="danger"
+                            type="button"
+                            onClick={handleDelete}
+                            className="profile-buttons">Delete 
+                            <span className="material-symbols-outlined">
+                            delete</span>
+                        </Button>
                     </div>
                 </div>
                 <div className="profile-info-container container">

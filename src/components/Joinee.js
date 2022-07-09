@@ -9,9 +9,10 @@ export default function Joinee(props)
     const classifyNew = Math.floor((presentDate - new Date(props.startDate))/msDay);
     const classifyEnding = Math.floor((new Date(props.endDate) - presentDate)/msDay);
 
-    if(classifyNew >= 0 && classifyNew <= 2) joineeClass = "new-joinee";
-    else if(presentDate > new Date(props.endDate)) joineeClass = "done-joinee";
+    //Will display if sub is ending, then if new
+    if(presentDate > new Date(props.endDate)) joineeClass = "done-joinee";
     else if(classifyEnding <= 2) joineeClass = "ending-joinee";
+    else if(classifyNew >= -1 && classifyNew <= 2) joineeClass = "new-joinee";
     else joineeClass = "simple-joinee";
 
     return (

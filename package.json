@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "scss": "sass public/styles.scss public/styles.css"
+    "scss": "sass --watch public/styles.scss public/styles.css"
   },
   "eslintConfig": {
     "extends": [
