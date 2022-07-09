@@ -1,0 +1,22 @@
+Gymbo
+>> Login (?)
+> trainer has to login (register?)
+>> Manage/Home
+> add people to your gym
+	> name
+	> phone
+	> other fields ?
+	> subscription (start date - end date)
+	> timestamp
+> smart search for joinee, clicking on joinee takes to profile page
+> the list will be colour coded
+	> categories (4):
+	> new/renewed joinees - present_date - start_date <= 2 days (green)
+	> subscription is almost ending - end_date - present_date <= 2 days (yellow)
+	> subscription ended - present_date > end_date (red)
+	> everyone else (white)
+>> Profile
+> contains info
+> can delete profiles from here, redirects to manage page
+>> Machines
+> equipment - add/delete with quantity (most recent at the top)
