@@ -39,7 +39,7 @@ export default function Manage()
             }
             else cnt++;
         }
-        if(cnt == joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
+        if(cnt === joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
         setDisplayError(prevError => ({...prevError, incorrectLength: (formData.phone.toString().length !== 10)}));
         setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
@@ -125,10 +125,10 @@ export default function Manage()
                     {displayError.alreadyExists && <div className="error-message">
                         <p>User already exists with the given phone number. Please change.</p>
                     </div>}
-                    {formData.phone != "" && displayError.incorrectLength && <div className="error-message">
+                    {formData.phone !== "" && displayError.incorrectLength && <div className="error-message">
                         <p>Phone number must be 10 digits long. Please change.</p>
                     </div>}
-                    {formData.phone != "" && displayError.containsNonDigits && <div className="error-message">
+                    {formData.phone !== "" && displayError.containsNonDigits && <div className="error-message">
                         <p>Phone number must only contain digits 0-9. Please change.</p>
                     </div>}
                     {   !displayError.incorrectLength && 

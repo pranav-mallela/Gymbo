@@ -46,7 +46,7 @@ body {
 
 /*Header CSS*/
 .navbar-container {
-  padding: 1rem;
+  padding: 2rem;
   display: flex;
   justify-content: space-between;
 }
