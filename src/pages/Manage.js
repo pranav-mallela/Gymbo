@@ -14,7 +14,7 @@ export default function Manage()
     const [dates, setDates] = React.useState({start:new Date(), end:null});
     const [joineeData, setJoineeData] = React.useState([]);
     const [refresh, setRefresh] = React.useState(false);
-    const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false});
+    const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false, containsNonDigits: false});
 
     React.useEffect(()=> {
         const fetchJoineeData = async() => {
@@ -41,6 +41,7 @@ export default function Manage()
         }
         if(cnt == joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
         setDisplayError(prevError => ({...prevError, incorrectLength: (formData.phone.toString().length !== 10)}));
+        setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
 
     function handleChange(e)
@@ -51,7 +52,7 @@ export default function Manage()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(displayError.alreadyExists || displayError.incorrectLength) return;
+        if(displayError.alreadyExists || displayError.incorrectLength || displayError.containsNonDigits) return;
         const newJoinee = {
             name: formData.name.toString(),
             phone: formData.phone.toString(),
@@ -124,8 +125,11 @@ export default function Manage()
                     {displayError.alreadyExists && <div className="error-message">
                         <p>User already exists with the given phone number. Please change.</p>
                     </div>}
-                    {displayError.incorrectLength && <div className="error-message">
+                    {formData.phone != "" && displayError.incorrectLength && <div className="error-message">
                         <p>Phone number must be 10 digits long. Please change.</p>
+                    </div>}
+                    {formData.phone != "" && displayError.containsNonDigits && <div className="error-message">
+                        <p>Phone number must only contain digits 0-9. Please change.</p>
                     </div>}
                     {   !displayError.incorrectLength && 
                         !displayError.alreadyExists && 

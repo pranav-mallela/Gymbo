@@ -13,6 +13,34 @@ export default function Profile()
     const {_id, name, phone, startDate, endDate} = useLocation().state;
     const [formData, setFormData] = React.useState({name: name, phone: phone, start: startDate, end: endDate});
     const [canEdit,setCanEdit] = React.useState(false);
+    const [joineeData, setJoineeData] = React.useState([]);
+    const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false, containsNonDigits: false});
+
+    React.useEffect(() => {
+        const fetchProfiles = async () => {
+            const response = await fetch('/api/manage');
+            const json = await response.json();
+            if(!response.ok) console.log(json.error);
+            else setJoineeData(json);
+        }
+        fetchProfiles();
+    },[])
+
+    React.useEffect(() => {
+        let cnt=0;
+        for(let i=0;i<joineeData.length;i++)
+        {
+            if(formData.phone.toString() === joineeData[i].phone)
+            {
+                setDisplayError(prevError => ({...prevError, alreadyExists: true}));
+            }
+            else cnt++;
+        }
+        if(cnt == joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
+        setDisplayError(prevError => ({...prevError, incorrectLength: (formData.phone.toString().length !== 10)}));
+        setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
+    },[formData.phone])
+
     function handleChange(e)
     {
         const {name, value} = e.target;
@@ -105,6 +133,15 @@ export default function Profile()
                                 disabled={!canEdit} 
                             />
                             <br />
+                            {displayError.alreadyExists && <div className="error-message">
+                                <p>User already exists with the given phone number. Please change.</p>
+                            </div>}
+                            {formData.phone != "" && displayError.incorrectLength && <div className="error-message">
+                                <p>Phone number must be 10 digits long. Please change.</p>
+                            </div>}
+                            {formData.phone != "" && displayError.containsNonDigits && <div className="error-message">
+                                <p>Phone number must only contain digits 0-9. Please change.</p>
+                            </div>}
                         </Col>
                         <Col xs={12} md={6}>
                             <div className="start-date">
@@ -126,7 +163,7 @@ export default function Profile()
                                     selected={new Date(formData.end)}
                                     onChange={date => setFormData(prevData => ({...prevData, end: date}))}
                                     dateFormat='dd/MM/yyyy'
-                                    minDate={formData.start}
+                                    minDate={new Date(formData.start)}
                                     disabled={!canEdit}
                                 />
                                 <br />
