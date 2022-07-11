@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Accordion } from "react-bootstrap";
 import Joinee from "../components/Joinee";
 import About from "../components/About";
 
@@ -84,16 +84,54 @@ export default function Manage()
         setSearch(e.target.value);
     }
 
+    const subEnding = [], subDone = [], newJoinee = [];
+    const presentDate = new Date();
+    const msDay = 60*60*24*1000;
+    let classifyNew, classifyEnding;
     const searchResults = [];
     for(let i=0;i<joineeData.length;i++)
     {
         if(joineeData[i].name.toLowerCase().includes(search.toLowerCase()))
-        {
             searchResults.push(joineeData[i]);
-        }
+        classifyNew = Math.floor((presentDate - new Date(joineeData[i].startDate))/msDay);
+        classifyEnding = Math.floor((new Date(joineeData[i].endDate) - presentDate)/msDay);
+        //Will display if sub is ending, then if new
+        if(presentDate > new Date(joineeData[i].endDate)) 
+            subDone.push(joineeData[i]);
+        else if(classifyEnding <= 2) 
+            subEnding.push(joineeData[i]);
+        else if(classifyNew >= -1 && classifyNew <= 2) 
+            newJoinee.push(joineeData[i]);
     }
 
     const resultsEls = searchResults.map(joinee => {
+        return <Joinee
+                    _id={joinee._id}
+                    name={joinee.name}
+                    phone={joinee.phone}
+                    startDate={joinee.startDate}
+                    endDate={joinee.endDate}
+                />
+    })
+    const subEndingEls = subEnding.map(joinee => {
+        return <Joinee
+                    _id={joinee._id}
+                    name={joinee.name}
+                    phone={joinee.phone}
+                    startDate={joinee.startDate}
+                    endDate={joinee.endDate}
+                />
+    })
+    const subDoneEls = subDone.map(joinee => {
+        return <Joinee
+                    _id={joinee._id}
+                    name={joinee.name}
+                    phone={joinee.phone}
+                    startDate={joinee.startDate}
+                    endDate={joinee.endDate}
+                />
+    })
+    const newJoineeEls = newJoinee.map(joinee => {
         return <Joinee
                     _id={joinee._id}
                     name={joinee.name}
@@ -120,6 +158,27 @@ export default function Manage()
                 </div>
                 </Col>
                 <Col xs={12} md={6} lg={5}>
+                <Accordion className="container">
+                    <h2>Dashboard</h2>
+                    <Accordion.Item eventKey="1">
+                        <Accordion.Header>Subscription Complete</Accordion.Header>
+                        <Accordion.Body>
+                        {subDoneEls}
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="2">
+                        <Accordion.Header>Subscription Ending</Accordion.Header>
+                        <Accordion.Body>
+                        {subEndingEls}
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="3">
+                        <Accordion.Header>New Joinees</Accordion.Header>
+                        <Accordion.Body>
+                        {newJoineeEls}
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
                 <Form className="container" onSubmit={handleSubmit}>
                     <h2>Add joinee</h2>
                     {displayError.alreadyExists && <div className="error-message">

@@ -106,11 +106,13 @@ export default function Machines()
                 <Col xs={12} md={6}>
                     <Form className="container" onSubmit={handleSubmit}>
                         <h2>Manage Equipment</h2>
+                        <Form.Label>Machine</Form.Label>
                         <Form.Control type="text" placeholder="Machine" name="machine" value={formData.machine} onChange={handleChange} />
-                        <div className="container">
+                        {formData.machine != "" && <div className="container">
                             {resultEls}
-                        </div>
+                        </div>}
                         <br />
+                        <Form.Label>Quantity</Form.Label>
                         <Form.Control type="number" placeholder="Quantity" name="quantity" value={formData.quantity} onChange={handleChange} />
                         <br />
                         <div className='button-container'>
