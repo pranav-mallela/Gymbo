@@ -161,19 +161,19 @@ export default function Manage()
                 <Accordion className="container">
                     <h2>Dashboard</h2>
                     <Accordion.Item eventKey="1">
-                        <Accordion.Header>Subscription Complete</Accordion.Header>
+                        <Accordion.Header>Subscription Complete ({subDoneEls.length})</Accordion.Header>
                         <Accordion.Body>
                         {subDoneEls}
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="2">
-                        <Accordion.Header>Subscription Ending</Accordion.Header>
+                        <Accordion.Header>Subscription Ending ({subEndingEls.length})</Accordion.Header>
                         <Accordion.Body>
                         {subEndingEls}
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="3">
-                        <Accordion.Header>New Joinees</Accordion.Header>
+                        <Accordion.Header>New Joinees ({newJoineeEls.length})</Accordion.Header>
                         <Accordion.Body>
                         {newJoineeEls}
                         </Accordion.Body>
