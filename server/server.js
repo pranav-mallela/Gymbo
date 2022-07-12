@@ -12,16 +12,21 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(morgan('dev'));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://protected-peak-51310.herokuapp.com");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use('/api/manage', manageRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/machines', machineRoutes);
 
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-    app.use(express.static('../client/build/'));
-    app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../client/build/index.html'));
-    });
-   }
+// if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+//     app.use(express.static('../client/build/'));
+//     app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname + '/../client/build/index.html'));
+//     });
+//    }
 
 mongoose.connect(process.env.MONGO_URI)
     .then(result => {
