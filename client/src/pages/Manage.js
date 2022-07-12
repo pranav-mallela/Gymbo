@@ -59,7 +59,7 @@ export default function Manage()
             startDate: dates.start,
             endDate: dates.end
         }
-        const response = await fetch('https://gymbo-app.herokuapp.com/api/manage', {
+        const response = await fetch('https://protected-peak-51310.herokuapp.com/api/manage', {
             method: 'POST',
             body: JSON.stringify(newJoinee),
             headers:{
