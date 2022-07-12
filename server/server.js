@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://protected-peak-51310.herokuapp.com");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
