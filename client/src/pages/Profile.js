@@ -18,7 +18,7 @@ export default function Profile()
 
     React.useEffect(() => {
         const fetchProfiles = async () => {
-            const response = await fetch('https://protected-peak-51310.herokuapp.com/api/manage');
+            const response = await fetch('/api/manage');
             const json = await response.json();
             if(!response.ok) console.log(json.error);
             else setJoineeData(json);
@@ -61,7 +61,7 @@ export default function Profile()
             startDate: formData.start,
             endDate: formData.end
         }
-        const response = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+ _id, {
+        const response = await fetch('/api/profile/'+ _id, {
             method: 'PATCH',
             body: JSON.stringify(changedJoinee),
             headers: {
@@ -74,7 +74,7 @@ export default function Profile()
     const handleDelete = async (e) => {
         window.location.href = '/';
         e.preventDefault();
-        const response = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+ _id, {
+        const response = await fetch('/api/profile/'+ _id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

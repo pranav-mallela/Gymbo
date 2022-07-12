@@ -1,4 +1,5 @@
 {
+  "proxy": "https://protected-peak-51310.herokuapp.com",
   "name": "gymbo",
   "version": "0.1.0",
   "private": true,
