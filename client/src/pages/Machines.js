@@ -12,7 +12,7 @@ export default function Machines()
 
     React.useEffect(() => {
         const fetchMachines = async () => {
-            const response = await fetch('/api/machines');
+            const response = await fetch('https://protected-peak-51310.herokuapp.com/api/machines');
             const json = await response.json();
             if(!response.ok) console.log(json.error);
             else setMachineData(json);
@@ -55,7 +55,7 @@ export default function Machines()
                 quantity: presentQuantity + parseInt(formData.quantity[0])
             }
             const str = (method === 'POST') ? "" : _id;
-            const response = await fetch('/api/machines/'+str, {
+            const response = await fetch('https://protected-peak-51310.herokuapp.com/api/machines/'+str, {
                 method: [method],
                 body: JSON.stringify(machineObj),
                 headers: {
