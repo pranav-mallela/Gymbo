@@ -16,8 +16,8 @@ export default function Header()
     return (
         <div>
             <div className="navbar-container">
-                <Link className="gymbo" to='/'><span className="gymbo">GYMBO</span></Link>
-                <FaDumbbell size={70}/>
+                <Link className="gymbo" to='/'><span className="black">GYMBO</span></Link>
+                {!showButton && <FaDumbbell size={70}/>}
                 {showButton && <Link to='/machines'>
                     <Button 
                     variant="info"
