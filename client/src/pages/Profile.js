@@ -52,27 +52,42 @@ export default function Profile()
         const editPermission = (id === "edit-button");
         setCanEdit(editPermission);
     }
-    const handleSaveProfile = async (e) => {
+    const handleSaveProfile = (e) => {
         e.preventDefault();
-        window.location.href='/';
         const changedJoinee = {
             name: formData.name.toString(),
             phone: formData.phone.toString(),
             startDate: formData.start,
             endDate: formData.end
         }
-        const response = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+ _id, {
-            method: 'PATCH',
-            body: JSON.stringify(changedJoinee),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const json = await response.json()
-        if(!response.ok) console.log(json.error);
+        // const firstDelete = async () => {
+        //     const response_0 = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+ _id, {
+        //         method: 'DELETE',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
+        //     const json_0 = await response_0.json()
+        //     if(!response_0.ok) console.log(json_0.error);
+        // }
+        const patchJoinee = async () => {
+            const response = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+_id, {
+                method: 'PATCH',
+                body: JSON.stringify(changedJoinee),
+                headers: {
+                    'Content-Type': 'application/json' 
+                }
+            })
+            const json = await response.json()
+            if(!response.ok) console.log(json.error);
+            else window.location.href='/';
+        }
+        // firstDelete();
+        // thenPost();
+        patchJoinee();
     }
+
     const handleDelete = async (e) => {
-        window.location.href = '/';
         e.preventDefault();
         const response = await fetch('https://protected-peak-51310.herokuapp.com/api/profile/'+ _id, {
             method: 'DELETE',
@@ -82,6 +97,7 @@ export default function Profile()
         })
         const json = await response.json()
         if(!response.ok) console.log(json.error);
+        else window.location.href='/';
     }
     const aboutProfile = "It keeps track of each joinee's data. Clicking 'Edit' allows modification. 'Delete' deleted the profile. 'Save Profile' saves the same. Deleting or saving redirects you to home."
 
