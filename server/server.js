@@ -5,12 +5,14 @@ require('dotenv').config();
 const manageRoutes = require('./routes/manageRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const machineRoutes = require('./routes/machineRoutes');
+const trainerRoutes = require('./routes/trainerRoutes');
 
 const app = express();
 
 //Middleware
 app.use(express.json());
 app.use(morgan('dev'));
+app.use('/api/trainer', trainerRoutes);
 app.use('/api/manage', manageRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/machines', machineRoutes);

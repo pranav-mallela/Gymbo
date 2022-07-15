@@ -12,7 +12,7 @@ const addJoinee = async (req, res) => {
 }
 
 const getAllJoinees = async (req,res) => {
-    const allJoinees = await Joinee.find({}).sort({createdAt: -1});
+    const allJoinees = await Joinee.find({}).sort({updatedAt: -1});
     try{
         res.status(200).json(allJoinees);
     }
