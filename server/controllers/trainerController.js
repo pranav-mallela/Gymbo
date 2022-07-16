@@ -11,6 +11,17 @@ const getAllTrainers = async (req, res) => {
     }
 }
 
+const getTrainer = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+    {
+        return res.status(400).json({error: 'Could not find trainer'})
+    }
+    const trainerData = await Trainer.findById(id);
+    if(!trainerData) res.status(400).json({error: "Could not find trainer"});
+    else res.status(200).json(trainerData);
+}
+
 const addTrainer = async (req, res) => {
     const { name, phone, password, joinees, machines } = req.body;
     try{
@@ -37,6 +48,7 @@ const modifyTrainer = async (req, res) => {
 
 module.exports = {
     getAllTrainers,
+    getTrainer,
     addTrainer,
     modifyTrainer
 }

@@ -7,27 +7,55 @@ import { Row, Col, Accordion } from "react-bootstrap";
 import Joinee from "../components/Joinee";
 import About from "../components/About";
 
-export default function Manage()
+export default function Manage({ trainerID })
 {
+    console.log(trainerID);
     const [formData, setFormData] = React.useState({name:"", phone:""});
     const [search, setSearch] = React.useState("");
     const [dates, setDates] = React.useState({start:new Date(), end:null});
     const [joineeData, setJoineeData] = React.useState([]);
     const [refresh, setRefresh] = React.useState(false);
     const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false, containsNonDigits: false});
+    const [trainer, setTrainer] = React.useState({name: "", phone: "", password: "", joinees: [], machines: []});
 
-    React.useEffect(()=> {
-        const fetchJoineeData = async() => {
-            const response = await fetch('/api/manage');
+    React.useEffect(() => {
+        const fetchSingleTrainer = async () => {
+            const response = await fetch('/api/trainer/'+trainerID);
             const json = await response.json();
-            if(response.ok)
+            if(!response.ok)
+                console.log(json.error);
+            else
             {
-                setJoineeData(json);
+                setTrainer(json);
+                const fetchJoinee = async (id) => {
+                    const response = await fetch('/api/profile/'+id);
+                    const joinee = await response.json();
+                    if(!response.ok)
+                        console.log(joinee.error);
+                    else
+                        setJoineeData(prevData => [joinee, ...prevData]);
+                }
+                for(let i=0;i<trainer.joinees.length;i++)
+                {
+                    fetchJoinee(trainer.joinees[i]);
+                }
             }
-            else console.log(json.error)
         }
-        fetchJoineeData();
+        fetchSingleTrainer();
     },[refresh])
+
+    // React.useEffect(()=> {
+    //     const fetchJoineeData = async() => {
+    //         const response = await fetch('/api/manage');
+    //         const json = await response.json();
+    //         if(response.ok)
+    //         {
+    //             setJoineeData(json);
+    //         }
+    //         else console.log(json.error)
+    //     }
+    //     fetchJoineeData();
+    // },[refresh])
 
     React.useEffect(() => {
         let cnt=0;
