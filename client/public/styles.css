@@ -19,6 +19,8 @@ body {
 
 .center {
   align-self: center;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .list-hover:hover {
@@ -132,6 +134,11 @@ body {
 
 #profile-name {
   width: 50%;
+}
+
+/*Login and Register CSS*/
+.login-container {
+  text-align: center;
 }
 
 /*# sourceMappingURL=styles.css.map */
