@@ -33,22 +33,44 @@ const addTrainer = async (req, res) => {
     }
 }
 
-const modifyTrainer = async (req, res) => {
+const addJoineeToTrainer = async (req, res) => {
     const { id } = req.params;
     if(!mongoose.Types.ObjectId.isValid(id))
     {
         return res.status(400).json({error: 'Could not find trainer'})
     }
-    const trainer = await Trainer.findOneAndUpdate({_id: id}, {
-        ...req.body
-    });
+    const trainer = await Trainer.findById(id);
     if(!trainer) res.status(400).json({error: "Could not find trainer"});
-    else res.status(200).json(trainer);
+    else
+    {
+        const updatedTrainer = await Trainer.findOneAndUpdate({_id: id}, {
+            joinees: [{...req.body} ,...trainer.joinees]   
+        });
+        res.status(200).json(updatedTrainer);
+    }
+}
+
+const addMachineToTrainer = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+    {
+        return res.status(400).json({error: 'Could not find trainer'})
+    }
+    const trainer = await Trainer.findById(id);
+    if(!trainer) res.status(400).json({error: "Could not find trainer"});
+    else
+    {
+        const updatedTrainer = await Trainer.findOneAndUpdate({_id: id}, {
+            joinees: [{...req.body} ,...trainer.joinees]   
+        });
+        res.status(200).json(updatedTrainer);
+    }
 }
 
 module.exports = {
     getAllTrainers,
     getTrainer,
     addTrainer,
-    modifyTrainer
+    addJoineeToTrainer,
+    addMachineToTrainer
 }

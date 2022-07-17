@@ -1,17 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const joineeSchema = new Schema({
+    name: {type: String, required: true},
+    phone: {type: String, required: true},
+    startDate: {type: String, required: true},
+    endDate: {type: String, required: true},
+}, {timestamps: true});
+
+const machineSchema = new Schema({
+    name:{type: String, required: true},
+    quantity:{type: Number, required: true},
+}, {timestamps:true});
+
 const trainerSchema = new Schema({
     name: {type: String, required: true},
     phone: {type: String, required: true},
     password: {type: String, required: true},
     joinees: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Joinee'
+        type: joineeSchema,
+        default: {}
     }],
     machines: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Machine'
+        type: machineSchema,
+        default: {}
     }]
 }, {timestamps: true});
 

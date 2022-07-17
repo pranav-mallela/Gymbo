@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 
-export default function Login({ trainerID, setTrainerID })
+export default function Login()
 {
     const [formData, setFormData] = React.useState({phone: "", password: ""});
     const [trainerData, setTrainerData] = React.useState([]);
@@ -33,12 +33,13 @@ export default function Login({ trainerID, setTrainerID })
         {
             if(formData.phone === trainerData[i].phone && formData.password === trainerData[i].password)
             {
-                setTrainerID(trainerData[i]._id);
-                // window.location.href='/manage';
+                // setTrainerID(trainerData[i]._id);
+                window.localStorage.setItem("trainerID", trainerData[i]._id);
+                window.location.href='/manage';
                 break;
             }
         }
-        console.log(trainerID);
+        // console.log(trainerID);
     }
 
     return (
@@ -65,15 +66,13 @@ export default function Login({ trainerID, setTrainerID })
                 />
                 <br />
                 <div className='center'>
-                   <Link to='/'>
-                        <Button
-                            variant="primary"
-                            className='login-button'
-                            type='submit'
-                        >
-                            Login
-                        </Button>
-                    </Link>
+                    <Button
+                        variant="primary"
+                        className='login-button'
+                        type='submit'
+                    >
+                        Login
+                    </Button>
                 </div>
                 <br />
                 <p className='center'>New Trainer? <Link to='/register'>Register here</Link></p>
