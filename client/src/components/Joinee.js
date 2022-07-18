@@ -14,17 +14,15 @@ export default function Joinee(props)
     else if(classifyEnding <= 2) joineeClass = "ending-joinee";
     else if(classifyNew >= -1 && classifyNew <= 2) joineeClass = "new-joinee";
     else joineeClass = "simple-joinee";
+    function handleClick()
+    {
+        window.localStorage.setItem("joineeProfile", JSON.stringify({_id: props._id, name: props.name, phone: props.phone, startDate: props.startDate, endDate: props.endDate}));
+        window.location.href = '/profile';
+    }
 
     return (
-        <Link 
-            to='/profile'
-            state={{
-                _id: props._id,
-                name: props.name,
-                phone: props.phone,
-                startDate: props.startDate,
-                endDate: props.endDate
-            }}
+        <div 
+            onClick={handleClick}
             className="joinee-link"
         >
             <div className={`joinee-container container ${joineeClass}`}>
@@ -37,6 +35,6 @@ export default function Joinee(props)
                     <div className="phone">{props.phone}</div>
                 </div>
             </div>
-        </Link>
+        </div>
     )
 }

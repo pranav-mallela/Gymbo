@@ -6,11 +6,13 @@ import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import About from "../components/About";
-import { useLocation } from 'react-router-dom';
 
 export default function Profile()
 {
-    const {_id, name, phone, startDate, endDate} = useLocation().state;
+    const trainerID = window.localStorage.getItem("trainerID");
+    let joineeProfile = window.localStorage.getItem("joineeProfile");
+    joineeProfile = JSON.parse(joineeProfile);
+    const {_id, name, phone, startDate, endDate} = joineeProfile;
     const [formData, setFormData] = React.useState({name: name, phone: phone, start: startDate, end: endDate});
     const [canEdit,setCanEdit] = React.useState(false);
     const [joineeData, setJoineeData] = React.useState([]);
@@ -18,10 +20,10 @@ export default function Profile()
 
     React.useEffect(() => {
         const fetchProfiles = async () => {
-            const response = await fetch('/api/manage');
+            const response = await fetch('/api/trainer/'+trainerID);
             const json = await response.json();
             if(!response.ok) console.log(json.error);
-            else setJoineeData(json);
+            else setJoineeData(json.joinees);
         }
         fetchProfiles();
     },[])
@@ -41,6 +43,27 @@ export default function Profile()
         setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
 
+    const sendToDB = async () => {
+        const response = await fetch('/api/trainer/'+ trainerID + '/joinee', {
+            method: 'PATCH',
+            body: JSON.stringify(joineeData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const json = await response.json()
+        if(!response.ok) console.log(json.error);
+        // else window.location.href='/manage';
+    }
+
+    React.useEffect(() => {
+        if(joineeData.length !== 0)
+        {
+            sendToDB();
+            // window.location.href = '/manage';
+        }
+    },[joineeData])
+
     function handleChange(e)
     {
         const {name, value} = e.target;
@@ -52,37 +75,28 @@ export default function Profile()
         const editPermission = (id === "edit-button");
         setCanEdit(editPermission);
     }
-    const handleSaveProfile = async (e) => {
+    const handleSaveProfile = (e) => {
         e.preventDefault();
-        window.location.href='/';
+        const newJoineeData = [];
         const changedJoinee = {
             name: formData.name.toString(),
             phone: formData.phone.toString(),
             startDate: formData.start,
             endDate: formData.end
         }
-        const response = await fetch('/api/profile/'+ _id, {
-            method: 'PATCH',
-            body: JSON.stringify(changedJoinee),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const json = await response.json()
-        if(!response.ok) console.log(json.error);
+        for(let i=0;i<joineeData.length;i++)
+        {
+            if(joineeData[i]._id == _id) newJoineeData.push(changedJoinee);
+            else newJoineeData.push(joineeData[i]);
+        }
+        setJoineeData(newJoineeData);
     }
-    const handleDelete = async (e) => {
-        window.location.href = '/';
+
+    const handleDelete = (e) => {
         e.preventDefault();
-        const response = await fetch('api/profile/'+ _id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const json = await response.json()
-        if(!response.ok) console.log(json.error);
+        setJoineeData(prevData => prevData.filter(joinee => joinee._id != _id));
     }
+
     const aboutProfile = "It keeps track of each joinee's data. Clicking 'Edit' allows modification. 'Delete' deleted the profile. 'Save Profile' saves the same. Deleting or saving redirects you to home."
 
     return (

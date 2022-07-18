@@ -5,20 +5,36 @@ import About from '../components/About';
 
 export default function Machines()
 {
+    const trainerID = window.localStorage.getItem("trainerID");
     const [formData, setFormData] = React.useState({machine: "", quantity: 0});
     const [search, setSearch] = React.useState("");
     const [machineData, setMachineData] = React.useState([]);
     const [refresh, setRefresh] = React.useState(false);
 
     React.useEffect(() => {
-        const fetchMachines = async () => {
-            const response = await fetch('/api/machines');
+        const fetchTrainerMachines = async () => {
+            const response = await fetch('/api/trainer/'+trainerID);
             const json = await response.json();
-            if(!response.ok) console.log(json.error);
-            else setMachineData(json);
+            if(!response.ok)
+                console.log(json.error);
+            else
+            {
+                // setTrainer(json);
+                setMachineData(json.machines);
+            }
         }
-        fetchMachines();
+        fetchTrainerMachines();
     },[refresh])
+
+    // React.useEffect(() => {
+    //     const fetchMachines = async () => {
+    //         const response = await fetch('/api/machines');
+    //         const json = await response.json();
+    //         if(!response.ok) console.log(json.error);
+    //         else setMachineData(json);
+    //     }
+    //     fetchMachines();
+    // },[refresh])
 
     function handleChange(e)
     {

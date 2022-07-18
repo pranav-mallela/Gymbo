@@ -14,9 +14,8 @@ export default function Manage()
     const [search, setSearch] = React.useState("");
     const [dates, setDates] = React.useState({start:new Date(), end:null});
     const [joineeData, setJoineeData] = React.useState([]);
-    const [refresh, setRefresh] = React.useState(false);
+    // const [refresh, setRefresh] = React.useState(false);
     const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false, containsNonDigits: false});
-    const [trainer, setTrainer] = React.useState({});
 
     React.useEffect(() => {
         const fetchTrainerJoinees = async () => {
@@ -25,13 +24,10 @@ export default function Manage()
             if(!response.ok)
                 console.log(json.error);
             else
-            {
-                setTrainer(json);
                 setJoineeData(json.joinees);
-            }
         }
         fetchTrainerJoinees();
-    },[refresh])    
+    },[])
 
     React.useEffect(() => {
         let cnt=0;
@@ -48,24 +44,12 @@ export default function Manage()
         setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
 
-    function handleChange(e)
-    {
-        const {name, value} = e.target;
-        setFormData(prevData => ({...prevData, [name] : [value]}));
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if(displayError.alreadyExists || displayError.incorrectLength || displayError.containsNonDigits) return;
-        const newJoinee = {
-            name: formData.name.toString(),
-            phone: formData.phone.toString(),
-            startDate: dates.start,
-            endDate: dates.end
-        }
+    const sendToDB = async () => {
+        console.log("Inside async")
+        console.log(joineeData)
         const response = await fetch('/api/trainer/'+trainerID+'/joinee', {
             method: 'PATCH',
-            body: JSON.stringify(newJoinee),
+            body: JSON.stringify(joineeData),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -79,8 +63,35 @@ export default function Manage()
         else{
             setFormData({name: "", phone: ""});
             setDates({start: new Date(), end: null});
-            setRefresh(prev => !prev);
+            // setRefresh(prev => !prev);
         }
+    }
+
+    React.useEffect(() => {
+        if(joineeData.length !== 0) sendToDB();
+    },[joineeData])
+
+    function handleChange(e)
+    {
+        const {name, value} = e.target;
+        setFormData(prevData => ({...prevData, [name] : [value]}));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if( displayError.alreadyExists || 
+            displayError.incorrectLength ||
+            displayError.containsNonDigits || 
+            formData.name === "" ||
+            dates.start == null ||
+            dates.end == null) return;
+        const newJoinee = {
+            name: formData.name.toString(),
+            phone: formData.phone.toString(),
+            startDate: dates.start,
+            endDate: dates.end
+        }
+        setJoineeData(prevData => [newJoinee, ...prevData]);
     }
 
     function handleSearch(e)
@@ -165,19 +176,19 @@ export default function Manage()
                 <Accordion className="container">
                     <h2>Dashboard</h2>
                     <Accordion.Item eventKey="1">
-                        <Accordion.Header>Subscription Complete</Accordion.Header>
+                        <Accordion.Header>Subscription Complete ({subDone.length})</Accordion.Header>
                         <Accordion.Body>
                         {subDoneEls}
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="2">
-                        <Accordion.Header>Subscription Ending</Accordion.Header>
+                        <Accordion.Header>Subscription Ending ({subEnding.length})</Accordion.Header>
                         <Accordion.Body>
                         {subEndingEls}
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="3">
-                        <Accordion.Header>New Joinees</Accordion.Header>
+                        <Accordion.Header>New Joinees ({newJoinee.length})</Accordion.Header>
                         <Accordion.Body>
                         {newJoineeEls}
                         </Accordion.Body>

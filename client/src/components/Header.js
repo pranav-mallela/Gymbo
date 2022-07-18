@@ -9,15 +9,15 @@ export default function Header()
     const [showButton, setShowButton] = React.useState(true);
     const location = useLocation();
     React.useEffect(() => {
-        if(location.pathname === '/') setShowButton(true);
+        if(location.pathname === '/manage') setShowButton(true);
         else setShowButton(false);
     },[location.pathname])
 
     return (
         <div>
             <div className="navbar-container">
-                <Link className="gymbo" to='/'><span className="gymbo">GYMBO</span></Link>
-                <FaDumbbell size={70}/>
+                <Link className="gymbo" to='/manage'><span className="gymbo">GYMBO</span></Link>
+                {!showButton && <FaDumbbell size={70}/>}
                 {showButton && <Link to='/machines'>
                     <Button 
                     variant="info"

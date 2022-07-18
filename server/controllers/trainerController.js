@@ -33,7 +33,7 @@ const addTrainer = async (req, res) => {
     }
 }
 
-const addJoineeToTrainer = async (req, res) => {
+const modifyTrainerJoinees = async (req, res) => {
     const { id } = req.params;
     if(!mongoose.Types.ObjectId.isValid(id))
     {
@@ -44,13 +44,13 @@ const addJoineeToTrainer = async (req, res) => {
     else
     {
         const updatedTrainer = await Trainer.findOneAndUpdate({_id: id}, {
-            joinees: [{...req.body} ,...trainer.joinees]   
+            joinees: [...req.body]   
         });
         res.status(200).json(updatedTrainer);
     }
 }
 
-const addMachineToTrainer = async (req, res) => {
+const modifyTrainerMachines = async (req, res) => {
     const { id } = req.params;
     if(!mongoose.Types.ObjectId.isValid(id))
     {
@@ -61,7 +61,7 @@ const addMachineToTrainer = async (req, res) => {
     else
     {
         const updatedTrainer = await Trainer.findOneAndUpdate({_id: id}, {
-            joinees: [{...req.body} ,...trainer.joinees]   
+            machines: [...req.body]
         });
         res.status(200).json(updatedTrainer);
     }
@@ -71,6 +71,6 @@ module.exports = {
     getAllTrainers,
     getTrainer,
     addTrainer,
-    addJoineeToTrainer,
-    addMachineToTrainer
+    modifyTrainerJoinees,
+    modifyTrainerMachines
 }

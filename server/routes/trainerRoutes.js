@@ -4,14 +4,14 @@ const {
     getAllTrainers,
     getTrainer,
     addTrainer,
-    addJoineeToTrainer,
-    addMachineToTrainer
+    modifyTrainerJoinees,
+    modifyTrainerMachines
 } = require('../controllers/trainerController');
 
 router.get('/', getAllTrainers);
 router.get('/:id', getTrainer);
 router.post('/', addTrainer);
-router.patch('/:id/joinee', addJoineeToTrainer);
-router.patch('/:id/machine', addMachineToTrainer);
+router.patch('/:id/joinee', modifyTrainerJoinees);
+router.patch('/:id/machine', modifyTrainerMachines);
 
 module.exports = router;
