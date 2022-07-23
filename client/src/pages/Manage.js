@@ -45,8 +45,8 @@ export default function Manage()
     },[formData.phone])
 
     const sendToDB = async () => {
-        console.log("Inside async")
-        console.log(joineeData)
+        // console.log("Inside async")
+        // console.log(joineeData)
         const response = await fetch('/api/trainer/'+trainerID+'/joinee', {
             method: 'PATCH',
             body: JSON.stringify(joineeData),

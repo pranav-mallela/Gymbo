@@ -16,12 +16,12 @@ export default function Header()
     return (
         <div>
             <div className="navbar-container">
-                <Link className="gymbo" to='/manage'><span className="gymbo">GYMBO</span></Link>
+                <Link className="link" to='/manage'><span className="gymbo">GYMBO</span></Link>
                 {!showButton && <FaDumbbell size={70}/>}
                 {showButton && <Link to='/machines'>
                     <Button 
                     variant="info"
-                    className="equipment-button"
+                    className="equipment-button button-margin"
                     >Equipment <BiDumbbell size={30}/></Button>                   
                 </Link>}
             </div>

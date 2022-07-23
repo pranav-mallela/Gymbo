@@ -9,7 +9,7 @@ export default function Machines()
     const [formData, setFormData] = React.useState({machine: "", quantity: 0});
     const [search, setSearch] = React.useState("");
     const [machineData, setMachineData] = React.useState([]);
-    const [refresh, setRefresh] = React.useState(false);
+    // const [refresh, setRefresh] = React.useState(false);
 
     React.useEffect(() => {
         const fetchTrainerMachines = async () => {
@@ -18,13 +18,10 @@ export default function Machines()
             if(!response.ok)
                 console.log(json.error);
             else
-            {
-                // setTrainer(json);
                 setMachineData(json.machines);
-            }
         }
         fetchTrainerMachines();
-    },[refresh])
+    },[])
 
     // React.useEffect(() => {
     //     const fetchMachines = async () => {
@@ -50,43 +47,52 @@ export default function Machines()
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let _id, method = 'POST', presentQuantity = 0;
+        //if name matches, modify or delete
+        //Modify: for loop new array, with updated values
+        //Delete: name -> filter out of array
+        //else if no match, add to array
+        let changedMachine = {
+            name: formData.machine, 
+            quantity: parseInt(formData.quantity[0])
+        };
+        let  deleteMachine = (changedMachine.quantity < 0);
+        const newMachineData = [];
         for(let i=0;i<machineData.length;i++)
         {
             if(machineData[i].name === formData.machine)
             {
-                _id = machineData[i]._id;
                 if(machineData[i].quantity + parseInt(formData.quantity[0]) > 0)
                 {
-                    method = 'PATCH';
-                    presentQuantity = machineData[i].quantity;
+                    deleteMachine = false;
+                    changedMachine.quantity = machineData[i].quantity + parseInt(formData.quantity[0]);
                 }
-                else method = 'DELETE';
+                else deleteMachine = true;
             }
+            else
+                newMachineData.push(machineData[i]);
         }
-        //async function to perform POST/PATCH/DELETE request
-        const sendToDB = async () => {
-            const machineObj = {
-                name: formData.machine.toString(),
-                quantity: presentQuantity + parseInt(formData.quantity[0])
-            }
-            const str = (method === 'POST') ? "" : _id;
-            const response = await fetch('/api/machines/'+str, {
-                method: [method],
-                body: JSON.stringify(machineObj),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            const json = await response.json();
-            if(!response.ok) console.log(json.error);
-            else{
-                setFormData({machine: "", quantity: 0});
-                setRefresh(prev => !prev);
-            }
-        }
-        sendToDB();
+        if(deleteMachine) setMachineData(newMachineData);
+        else setMachineData(changedMachine, ...newMachineData);
     }
+    const sendToDB = async () => {
+        const response = await fetch('/api/trainer/'+trainerID+'/machine', {
+            method: 'PATCH',
+            body: JSON.stringify(machineData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const json = await response.json();
+        if(!response.ok) console.log(json.error);
+        else{
+            setFormData({machine: "", quantity: 0});
+            // setRefresh(prev => !prev);
+        }
+    }
+    React.useEffect(() => {
+        if(machineData.length !== 0)
+            sendToDB();
+    }, [machineData])
 
     const searchResults = [];
     for(let i=0;i<machineData.length;i++)
