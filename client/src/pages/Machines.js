@@ -9,7 +9,7 @@ export default function Machines()
     const [formData, setFormData] = React.useState({machine: "", quantity: 0});
     const [search, setSearch] = React.useState("");
     const [machineData, setMachineData] = React.useState([]);
-    // const [refresh, setRefresh] = React.useState(false);
+    const [refresh, setRefresh] = React.useState(false);
 
     React.useEffect(() => {
         const fetchTrainerMachines = async () => {
@@ -21,17 +21,7 @@ export default function Machines()
                 setMachineData(json.machines);
         }
         fetchTrainerMachines();
-    },[])
-
-    // React.useEffect(() => {
-    //     const fetchMachines = async () => {
-    //         const response = await fetch('/api/machines');
-    //         const json = await response.json();
-    //         if(!response.ok) console.log(json.error);
-    //         else setMachineData(json);
-    //     }
-    //     fetchMachines();
-    // },[refresh])
+    },[refresh])
 
     function handleChange(e)
     {
@@ -45,6 +35,7 @@ export default function Machines()
         setFormData(prevData => ({...prevData, machine:e.target.innerHTML}))
     }
 
+    const newMachineData = [];
     const handleSubmit = (e) => {
         e.preventDefault();
         //if name matches, modify or delete
@@ -52,11 +43,10 @@ export default function Machines()
         //Delete: name -> filter out of array
         //else if no match, add to array
         let changedMachine = {
-            name: formData.machine, 
-            quantity: parseInt(formData.quantity[0])
+            name: formData.machine.toString(), 
+            quantity: parseInt(formData.quantity[0]).toString()
         };
         let  deleteMachine = (changedMachine.quantity < 0);
-        const newMachineData = [];
         for(let i=0;i<machineData.length;i++)
         {
             if(machineData[i].name === formData.machine)
@@ -71,28 +61,26 @@ export default function Machines()
             else
                 newMachineData.push(machineData[i]);
         }
-        if(deleteMachine) setMachineData(newMachineData);
-        else setMachineData(changedMachine, ...newMachineData);
-    }
-    const sendToDB = async () => {
-        const response = await fetch('/api/trainer/'+trainerID+'/machine', {
-            method: 'PATCH',
-            body: JSON.stringify(machineData),
-            headers: {
-                'Content-Type': 'application/json'
+        if(!deleteMachine) newMachineData.unshift(changedMachine);
+        const sendToDB = async () => {
+            const response = await fetch('/api/trainer/'+trainerID+'/machine', {
+                method: 'PATCH',
+                body: JSON.stringify(newMachineData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const json = await response.json();
+            if(!response.ok) console.log(json.error);
+            else{
+                setFormData({machine: "", quantity: 0});
+                setRefresh(prev => !prev);
             }
-        })
-        const json = await response.json();
-        if(!response.ok) console.log(json.error);
-        else{
-            setFormData({machine: "", quantity: 0});
-            // setRefresh(prev => !prev);
         }
+        console.log(newMachineData);
+        console.log(deleteMachine);
+        sendToDB();
     }
-    React.useEffect(() => {
-        if(machineData.length !== 0)
-            sendToDB();
-    }, [machineData])
 
     const searchResults = [];
     for(let i=0;i<machineData.length;i++)
