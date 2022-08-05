@@ -35,6 +35,7 @@ export default function Login()
             {
                 // setTrainerID(trainerData[i]._id);
                 window.localStorage.setItem("trainerID", trainerData[i]._id);
+                window.localStorage.setItem("credentials", JSON.stringify({phone: formData.phone.toString(), password: formData.password.toString()}));
                 window.location.href='/manage';
                 break;
             }

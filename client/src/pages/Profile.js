@@ -6,12 +6,16 @@ import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import About from "../components/About";
+import { Buffer } from 'buffer';
 
 export default function Profile()
 {
     const trainerID = window.localStorage.getItem("trainerID");
     let joineeProfile = window.localStorage.getItem("joineeProfile");
     joineeProfile = JSON.parse(joineeProfile);
+    let credentials = window.localStorage.getItem("credentials");
+    credentials = JSON.parse(credentials);
+    const basicAuth = Buffer.from(`${credentials.phone}:${credentials.password}`).toString('base64');
     const {_id, name, phone, startDate, endDate} = joineeProfile;
     const [formData, setFormData] = React.useState({name: name, phone: phone, start: startDate, end: endDate});
     const [canEdit,setCanEdit] = React.useState(false);
@@ -20,7 +24,13 @@ export default function Profile()
 
     React.useEffect(() => {
         const fetchProfiles = async () => {
-            const response = await fetch('/api/trainer/'+trainerID);
+            const response = await fetch('/api/trainer/'+trainerID, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${basicAuth}`
+                }
+            });
             const json = await response.json();
             if(!response.ok) console.log(json.error);
             else setJoineeData(json.joinees);
@@ -48,7 +58,8 @@ export default function Profile()
             method: 'PATCH',
             body: JSON.stringify(joineeData),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${basicAuth}`
             }
         })
         const json = await response.json()

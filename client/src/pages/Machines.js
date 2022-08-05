@@ -2,18 +2,32 @@ import React from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import Equipment from '../components/Equipment';
 import About from '../components/About';
+import { Buffer } from 'buffer';
 
 export default function Machines()
 {
     const trainerID = window.localStorage.getItem("trainerID");
+    let credentials = window.localStorage.getItem("credentials");
+    credentials = JSON.parse(credentials);
+    const basicAuth = Buffer.from(`${credentials.phone}:${credentials.password}`).toString('base64');
     const [formData, setFormData] = React.useState({machine: "", quantity: 0});
     const [search, setSearch] = React.useState("");
     const [machineData, setMachineData] = React.useState([]);
     const [refresh, setRefresh] = React.useState(false);
+    // if(!trainerID)
+    // {
+    //     return <div>Unauthorized Access</div>
+    // }
 
     React.useEffect(() => {
         const fetchTrainerMachines = async () => {
-            const response = await fetch('/api/trainer/'+trainerID);
+            const response = await fetch('/api/trainer/'+trainerID, {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${basicAuth}`
+                }
+            });
             const json = await response.json();
             if(!response.ok)
                 console.log(json.error);
@@ -67,7 +81,8 @@ export default function Machines()
                 method: 'PATCH',
                 body: JSON.stringify(newMachineData),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${basicAuth}`
                 }
             })
             const json = await response.json();
