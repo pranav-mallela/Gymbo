@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const joineeSchema = new Schema({
@@ -26,6 +27,17 @@ const trainerSchema = new Schema({
         default: {}
     }]
 }, {timestamps: true});
+
+trainerSchema.statics.register = async function(name, phone, password, joinees, machines) {
+    const exists = await this.findOne({ phone })
+    if(exists){
+        throw Error('Phone is already in use')
+    }
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    const user = await this.create({name, phone, password: hash, joinees, machines})
+    return user
+}
 
 const Trainer = mongoose.model('Trainer', trainerSchema);
 module.exports = Trainer;

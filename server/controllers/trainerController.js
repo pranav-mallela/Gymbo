@@ -25,12 +25,19 @@ const getTrainer = async (req, res) => {
 const addTrainer = async (req, res) => {
     const { name, phone, password, joinees, machines } = req.body;
     try{
-        const newTrainer = await Trainer.create({ name, phone, password, joinees, machines });
-        res.status(200).json({newTrainer});
+        const user = await Trainer.register(name, phone, password, joinees, machines)
+        res.status(200).json({user})
     }
-    catch(err){
-        res.status(400).json({error: err.message});
+    catch (error){
+        res.status(400).json({error: error.message})
     }
+//     try{
+//         const newTrainer = await Trainer.create({ name, phone, password, joinees, machines });
+//         res.status(200).json({newTrainer});
+//     }
+//     catch(err){
+//         res.status(400).json({error: err.message});
+//     }
 }
 
 const modifyTrainerJoinees = async (req, res) => {
