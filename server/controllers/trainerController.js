@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const Trainer = require('../models/trainerModel');
+const jwt = require('jsonwebtoken');
+
+const createToken = (_id) => {
+    return jwt.sign({_id}, process.env.SECRET_JWT, {expiresIn: '1d'})
+}
 
 const getAllTrainers = async (req, res) => {
     const allTrainers = await Trainer.find({}).sort({updatedAt: -1});
@@ -26,7 +31,9 @@ const addTrainer = async (req, res) => {
     const { name, phone, password, joinees, machines } = req.body;
     try{
         const user = await Trainer.register(name, phone, password, joinees, machines)
-        res.status(200).json({user})
+        //creating token
+        const token = createToken(user._id)
+        res.status(200).json({user, token})
     }
     catch (error){
         res.status(400).json({error: error.message})
@@ -38,6 +45,18 @@ const addTrainer = async (req, res) => {
 //     catch(err){
 //         res.status(400).json({error: err.message});
 //     }
+}
+
+const trainerLogin = async (req, res) => {
+    const {phone, password} = req.body;
+    try{
+        const user = await Trainer.login(phone, password)
+        const token = createToken(user._id)
+        res.status(200).json({user, token})
+    }
+    catch(error){
+        res.status(400).json({error: error.message})
+    }
 }
 
 const modifyTrainerJoinees = async (req, res) => {
@@ -78,6 +97,7 @@ module.exports = {
     getAllTrainers,
     getTrainer,
     addTrainer,
+    trainerLogin,
     modifyTrainerJoinees,
     modifyTrainerMachines
 }

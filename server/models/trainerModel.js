@@ -28,6 +28,7 @@ const trainerSchema = new Schema({
     }]
 }, {timestamps: true});
 
+// static function to register a trainer
 trainerSchema.statics.register = async function(name, phone, password, joinees, machines) {
     const exists = await this.findOne({ phone })
     if(exists){
@@ -36,6 +37,21 @@ trainerSchema.statics.register = async function(name, phone, password, joinees, 
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
     const user = await this.create({name, phone, password: hash, joinees, machines})
+    return user
+}
+
+//static function to login a trainer
+trainerSchema.statics.login = async function(phone, password) {
+    const user = await this.findOne({ phone })
+    if(!user)
+    {
+        throw Error('Incorrect phone number, please try again')
+    }
+    const match = await bcrypt.compare(password, user.password)
+    if(!match)
+    {
+        throw Error('Incorrect credentials')
+    }
     return user
 }
 
