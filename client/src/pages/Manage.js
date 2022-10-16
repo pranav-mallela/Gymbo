@@ -6,24 +6,16 @@ import Button from 'react-bootstrap/Button'
 import { Row, Col, Accordion } from "react-bootstrap";
 import Joinee from "../components/Joinee";
 import About from "../components/About";
-import { Buffer } from "buffer";
 
 export default function Manage()
 {
-    const trainerID = window.localStorage.getItem("trainerID");
-    let credentials = window.localStorage.getItem("credentials");
-    credentials = JSON.parse(credentials);
-    const basicAuth = Buffer.from(`${credentials.phone}:${credentials.password}`).toString('base64');
+    const jwt = localStorage.getItem('JWT')
+    const trainerID = localStorage.getItem('TrainerID')
     const [formData, setFormData] = React.useState({name:"", phone:""});
     const [search, setSearch] = React.useState("");
     const [dates, setDates] = React.useState({start:new Date(), end:null});
     const [joineeData, setJoineeData] = React.useState([]);
-    // const [refresh, setRefresh] = React.useState(false);
     const [displayError, setDisplayError] = React.useState({alreadyExists: false, incorrectLength: false, containsNonDigits: false});
-    // if(!trainerID)
-    // {
-    //     return <div>Unauthorized Access</div>
-    // }
 
     React.useEffect(() => {
         const fetchTrainerJoinees = async () => {
@@ -31,7 +23,7 @@ export default function Manage()
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Basic ${basicAuth}`
+                    'Authorization': `Bearer ${jwt}`
                 }
             });
             const json = await response.json();
@@ -59,27 +51,17 @@ export default function Manage()
     },[formData.phone])
 
     const sendToDB = async () => {
-        // console.log("Inside async")
-        // console.log(joineeData)
         const response = await fetch('/api/trainer/'+trainerID+'/joinee', {
             method: 'PATCH',
             body: JSON.stringify(joineeData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Basic ${basicAuth}`
+                'Authorization': `Bearer ${jwt}`
             }
         })
-        const json = await response.json()
-        if(!response.ok)
-        {
-            //output the error
-            console.log(json.error)
-        }
-        else{
-            setFormData({name: "", phone: ""});
-            setDates({start: new Date(), end: null});
-            // setRefresh(prev => !prev);
-        }
+        
+        setFormData({name: "", phone: ""});
+        setDates({start: new Date(), end: null});
     }
 
     React.useEffect(() => {

@@ -26,6 +26,8 @@ export default function Login()
                 json.then(
                     function (value) {
                         localStorage.setItem('JWT', value.token)
+                        localStorage.setItem('TrainerID', value.user._id)
+                        window.location.href = '/manage'
                     },
                     function (error) {
                         console.log(error);
