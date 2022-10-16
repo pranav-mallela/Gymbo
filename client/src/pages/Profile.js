@@ -6,16 +6,14 @@ import Form from 'react-bootstrap/Form'
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import About from "../components/About";
-import { Buffer } from 'buffer';
 
 export default function Profile()
 {
-    const trainerID = window.localStorage.getItem("trainerID");
+    const jwt = localStorage.getItem('JWT')
+    const trainerID = localStorage.getItem('TrainerID')
     let joineeProfile = window.localStorage.getItem("joineeProfile");
     joineeProfile = JSON.parse(joineeProfile);
-    let credentials = window.localStorage.getItem("credentials");
-    credentials = JSON.parse(credentials);
-    const basicAuth = Buffer.from(`${credentials.phone}:${credentials.password}`).toString('base64');
+
     const {_id, name, phone, startDate, endDate} = joineeProfile;
     const [formData, setFormData] = React.useState({name: name, phone: phone, start: startDate, end: endDate});
     const [canEdit,setCanEdit] = React.useState(false);
@@ -28,7 +26,7 @@ export default function Profile()
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Basic ${basicAuth}`
+                    'Authorization': `Bearer ${jwt}`
                 }
             });
             const json = await response.json();
@@ -59,7 +57,7 @@ export default function Profile()
             body: JSON.stringify(joineeData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Basic ${basicAuth}`
+                'Authorization': `Bearer ${jwt}`
             }
         })
         const json = await response.json()

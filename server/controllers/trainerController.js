@@ -89,7 +89,7 @@ const modifyTrainerMachines = async (req, res) => {
         const updatedTrainer = await Trainer.findOneAndUpdate({_id: id}, {
             machines: [...req.body]
         });
-        res.status(200).json();
+        res.status(200).json(updatedTrainer);
     }
 }
 
