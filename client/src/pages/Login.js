@@ -6,19 +6,35 @@ import {Link} from 'react-router-dom';
 export default function Login()
 {
     const [formData, setFormData] = React.useState({phone: "", password: ""});
-    const [trainerData, setTrainerData] = React.useState([]);
+    const [submit, setSubmit] = React.useState(false)
 
     React.useEffect(() => {
-        const fetchAllTrainers = async () => {
-            const response = await fetch('/api/trainer');
-            const json = await response.json();
+        const trainerLogin = async () => {
+            const response = await fetch('api/trainer/login', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const json = response.json()
             if(!response.ok)
-                console.log(json.error);
-            else
-                setTrainerData(json);
+            {
+                console.log(json.error)
+            }
+            else{
+                json.then(
+                    function (value) {
+                        localStorage.setItem('JWT', value.token)
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                );
+            }
         }
-        fetchAllTrainers();
-    },[])
+        trainerLogin()
+    }, [submit])
 
     function handleChange(e)
     {
@@ -29,18 +45,7 @@ export default function Login()
     function handleSubmit(e)
     {
         e.preventDefault();
-        for(let i=0;i<trainerData.length;i++)
-        {
-            if(formData.phone === trainerData[i].phone && formData.password === trainerData[i].password)
-            {
-                // setTrainerID(trainerData[i]._id);
-                window.localStorage.setItem("trainerID", trainerData[i]._id);
-                window.localStorage.setItem("credentials", JSON.stringify({phone: formData.phone.toString(), password: formData.password.toString()}));
-                window.location.href='/manage';
-                break;
-            }
-        }
-        // console.log(trainerID);
+        setSubmit(true);
     }
 
     return (
