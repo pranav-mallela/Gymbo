@@ -7,31 +7,31 @@ export default function Register()
 {
     const [formData, setFormData] = React.useState({name: "", phone: "", password: "", confirmPassword: ""});
     const [displayError, setDisplayError] = React.useState({trainerAlreadyExists: false, incorrectLength: false, containsNonDigits: false, passwordsDoNotMatch: false});
-    const [trainerData, setTrainerData] = React.useState([]);
+    // const [trainerData, setTrainerData] = React.useState([]);
+
+    // React.useEffect(() => {
+    //     const fetchAllTrainers = async () => {
+    //         const response = await fetch('/api/trainer');
+    //         const json = await response.json();
+    //         if(!response.ok)
+    //             console.log(json.error);
+    //         else
+    //             setTrainerData(json);
+    //     }
+    //     fetchAllTrainers();
+    // },[])
 
     React.useEffect(() => {
-        const fetchAllTrainers = async () => {
-            const response = await fetch('/api/trainer');
-            const json = await response.json();
-            if(!response.ok)
-                console.log(json.error);
-            else
-                setTrainerData(json);
-        }
-        fetchAllTrainers();
-    },[])
-
-    React.useEffect(() => {
-        let cnt=0;
-        for(let i=0;i<trainerData.length;i++)
-        {
-            if(formData.phone.toString() === trainerData[i].phone)
-            {
-                setDisplayError(prevError => ({...prevError, trainerAlreadyExists: true}));
-            }
-            else cnt++;
-        }
-        if(cnt === trainerData.length) setDisplayError(prevError => ({...prevError, trainerAlreadyExists: false}));
+        // let cnt=0;
+        // for(let i=0;i<trainerData.length;i++)
+        // {
+        //     if(formData.phone.toString() === trainerData[i].phone)
+        //     {
+        //         setDisplayError(prevError => ({...prevError, trainerAlreadyExists: true}));
+        //     }
+        //     else cnt++;
+        // }
+        // if(cnt === trainerData.length) setDisplayError(prevError => ({...prevError, trainerAlreadyExists: false}));
         setDisplayError(prevError => ({...prevError, incorrectLength: (formData.phone.toString().length !== 10)}));
         setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
@@ -65,7 +65,7 @@ export default function Register()
                     'Content-Type': 'application/json'
                 }
             })
-            const json = await response.json()
+            const json = response.json()
             if(!response.ok)
             {
                 //output the error
@@ -75,19 +75,28 @@ export default function Register()
             {
                 setDisplayError({trainerAlreadyExists: false, incorrectLength: false, containsNonDigits: false, passwordsDoNotMatch: false});
                 setFormData({name: "", phone: "", password: "", confirmPassword: ""})
-                window.location.href = '/manage';
+                json.then(
+                    function (value) {
+                        localStorage.setItem('JWT', value.token)
+                        localStorage.setItem('TrainerID', value.user._id)
+                        window.location.href = '/manage'
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                );
             }
         }
         registerTrainer();
     }
-    console.log(displayError);
+    // console.log(displayError);
 
     return (
         <div className='login-container center'>
             <Form className='container login-form' onSubmit={handleSubmit}>
                 <h2>
                     Register as a Trainer
-                    <span class="material-symbols-outlined">account_circle</span>
+                    <span className="material-symbols-outlined">account_circle</span>
                 </h2> 
                 <Form.Control
                     type="text" 

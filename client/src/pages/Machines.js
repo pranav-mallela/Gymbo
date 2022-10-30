@@ -57,7 +57,7 @@ export default function Machines()
         let  deleteMachine = (changedMachine.quantity < 0);
         for(let i=0;i<machineData.length;i++)
         {
-            if(machineData[i].name === formData.machine)
+            if(machineData[i].name.toString() === formData.machine.toString())
             {
                 if(machineData[i].quantity + parseInt(formData.quantity[0]) > 0)
                 {

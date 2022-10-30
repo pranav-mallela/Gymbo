@@ -37,16 +37,16 @@ export default function Profile()
     },[])
 
     React.useEffect(() => {
-        let cnt=0;
-        for(let i=0;i<joineeData.length;i++)
-        {
-            if(formData.phone.toString() === joineeData[i].phone)
-            {
-                setDisplayError(prevError => ({...prevError, alreadyExists: true}));
-            }
-            else cnt++;
-        }
-        if(cnt === joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
+        // let cnt=0;
+        // for(let i=0;i<joineeData.length;i++)
+        // {
+        //     if(formData.phone.toString() === joineeData[i].phone)
+        //     {
+        //         setDisplayError(prevError => ({...prevError, alreadyExists: true}));
+        //     }
+        //     else cnt++;
+        // }
+        // if(cnt === joineeData.length) setDisplayError(prevError => ({...prevError, alreadyExists: false}));
         setDisplayError(prevError => ({...prevError, incorrectLength: (formData.phone.toString().length !== 10)}));
         setDisplayError(prevError => ({...prevError, containsNonDigits: !(/^\d+$/.test(formData.phone.toString()))}));
     },[formData.phone])
@@ -82,10 +82,11 @@ export default function Profile()
     {
         const {id} = e.target;
         const editPermission = (id === "edit-button");
-        setCanEdit(editPermission);
+        if(!displayError.containsNonDigits && !displayError.incorrectLength) setCanEdit(editPermission);
     }
     const handleSaveProfile = (e) => {
         e.preventDefault();
+        if(displayError.containsNonDigits || displayError.incorrectLength) return;
         const newJoineeData = [];
         const changedJoinee = {
             name: formData.name.toString(),

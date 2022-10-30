@@ -33,7 +33,7 @@ const addTrainer = async (req, res) => {
         const user = await Trainer.register(name, phone, password, joinees, machines)
         //creating token
         const token = createToken(user._id)
-        res.status(200).json({token})
+        res.status(200).json({user, token})
     }
     catch (error){
         res.status(400).json({error: error.message})
