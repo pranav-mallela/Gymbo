@@ -2,8 +2,9 @@ import React from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import Equipment from '../components/Equipment';
 import About from '../components/About';
+import AuthWarning from "../components/AuthWarning";
 
-export default function Machines()
+export default function Machines({login, setLogin})
 {
     const jwt = localStorage.getItem('JWT')
     const trainerID = localStorage.getItem('TrainerID')
@@ -26,7 +27,10 @@ export default function Machines()
             if(!response.ok)
                 console.log(json.error);
             else
+            {
                 setMachineData(json.machines);
+                setLogin(true);
+            }
         }
         fetchTrainerMachines();
     },[refresh])
@@ -120,10 +124,11 @@ export default function Machines()
 
     return(
         <div className="page-container">
-            <About
+            {!login && <AuthWarning />}
+            {login && <About
                 aboutText={aboutMachines}
-            />
-            <Row>
+            />}
+            {login && <Row>
                 <Col xs={12} md={6}>
                     <Form className="container" onSubmit={handleSubmit}>
                         <h2>Manage Equipment</h2>
@@ -148,7 +153,7 @@ export default function Machines()
                         {machineEls}
                     </div>
                 </Col>
-            </Row>
+            </Row>}
         </div>
     )
 }

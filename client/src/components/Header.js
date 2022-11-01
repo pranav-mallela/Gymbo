@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FaDumbbell } from 'react-icons/fa';
 import { BiDumbbell } from 'react-icons/bi';
 
-export default function Header()
+export default function Header({login})
 {
     const [showButton, setShowButton] = React.useState(false);
     const location = useLocation();
@@ -35,7 +35,7 @@ export default function Header()
                         variant="info"
                         className="button-margin"
                         onClick={handleLogout}
-                    >Logout</Button>}
+                    >{login ? "Logout" : "Login"}</Button>}
                 </div>}
             </div>
             <hr/>

@@ -6,8 +6,9 @@ import Button from 'react-bootstrap/Button'
 import { Row, Col, Accordion } from "react-bootstrap";
 import Joinee from "../components/Joinee";
 import About from "../components/About";
+import AuthWarning from "../components/AuthWarning";
 
-export default function Manage()
+export default function Manage({login, setLogin})
 {
     const jwt = localStorage.getItem('JWT')
     const trainerID = localStorage.getItem('TrainerID')
@@ -30,7 +31,10 @@ export default function Manage()
             if(!response.ok)
                 console.log(json.error);
             else
+            {
                 setJoineeData(json.joinees);
+                setLogin(true);
+            }
         }
         fetchTrainerJoinees();
     },[])
@@ -156,10 +160,11 @@ export default function Manage()
 
     return (
         <div className="page-container">
-            <About
+            {!login && <AuthWarning />}
+            {login && <About
                 aboutText={aboutManage}
-            />
-            <Row>
+            />}
+            {login && <Row>
                 <Col xs={12} md={6} lg={7}>
                 <div className="search-container container">
                     <Form>
@@ -255,7 +260,7 @@ export default function Manage()
                     </div>
                 </Form>
                 </Col>
-            </Row>
+            </Row>}
         </div>
     )
 }

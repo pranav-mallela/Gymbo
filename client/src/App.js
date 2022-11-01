@@ -11,16 +11,16 @@ import Register from "./pages/Register";
  export default function App()
  {
     const location = useLocation();
-    // const [trainerID, setTrainerID] = React.useState("");
+    const [login, setLogin] = React.useState(false);
     return (
       <div className="main-container">
-        <Header />
+        <Header login={login} />
         <Routes location={location} key={location.key}>
           <Route path='/' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/manage' element={<Manage />} />
+          <Route path='/manage' element={<Manage login={login} setLogin={setLogin} />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='/machines' element={<Machines />} />
+          <Route path='/machines' element={<Machines login={login} setLogin={setLogin} />} />
         </Routes>
       </div>
     )
