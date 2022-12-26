@@ -16,7 +16,7 @@ import Register from "./pages/Register";
       <div className="main-container">
         <Header login={login} />
         <Routes location={location} key={location.key}>
-          <Route path='/' element={<Login />} />
+          <Route path='/' element={<Login login={login} />} />
           <Route path='/register' element={<Register />} />
           <Route path='/manage' element={<Manage login={login} setLogin={setLogin} />} />
           <Route path='/profile' element={<Profile />} />

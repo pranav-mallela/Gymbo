@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 
-export default function Login()
+export default function Login({login})
 {
     const [formData, setFormData] = React.useState({phone: "", password: ""});
     const [submit, setSubmit] = React.useState(false)
@@ -35,9 +35,14 @@ export default function Login()
                 );
             }
         }
+        if(login) 
+        {
+            window.location.href = '/manage'
+            console.log("Logged in.")
+        }
         trainerLogin()
     }, [submit])
-
+    // console.log(login)
     function handleChange(e)
     {
         const { name, value } = e.target;
