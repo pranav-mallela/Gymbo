@@ -1,5 +1,5 @@
 {
-  "proxy": "http://localhost:4000/",
+  "proxy": "https://gymbo-server-7y5diawwca-el.a.run.app/",
   "name": "gymbo",
   "version": "0.1.0",
   "private": true,
