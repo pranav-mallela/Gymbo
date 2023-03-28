@@ -17,8 +17,6 @@ RUN npm install --legacy-peer-deps
 # Bundle app source
 COPY . .
 
-RUN npm run build
-
 EXPOSE 4000
 
 CMD ["serve", "-s", "-l", "4000", "./build"]
